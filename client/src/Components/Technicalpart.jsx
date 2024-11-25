@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, ListGroup } from "react-bootstrap";
+import { Form, ListGroup, Row } from "react-bootstrap";
 
 export function TechnicalPart({ inputValues, setInputValues, selectedFiles, setSelectedFiles }) {
     const typeOptions = [
@@ -71,30 +71,31 @@ export function TechnicalPart({ inputValues, setInputValues, selectedFiles, setS
                     )}
                 </div>
             </Form.Group>
+            <Row>
+                <Form.Group controlId="formLanguage" className="mb-2 col-md-6">
+                    <Form.Label className="fw-bold" style={{ fontSize: "1.2rem", color: "black" }}>Language</Form.Label>
+                    <Form.Control
+                        type="text"
+                        value={inputValues.language}
+                        onChange={(e) =>
+                            setInputValues({ ...inputValues, language: e.target.value })
+                        }
+                        placeholder="Click to enter language"
+                    />
+                </Form.Group>
 
-            <Form.Group controlId="formLanguage" className="mb-2">
-                <Form.Label className="fw-bold" style={{ fontSize: "1.2rem", color: "black" }}>Language</Form.Label>
-                <Form.Control
-                    type="text"
-                    value={inputValues.language}
-                    onChange={(e) =>
-                        setInputValues({ ...inputValues, language: e.target.value })
-                    }
-                    placeholder="Click to enter language"
-                />
-            </Form.Group>
-
-            <Form.Group controlId="formPages" className="mb-2">
-                <Form.Label className="fw-bold" style={{ fontSize: "1.2rem", color: "black" }}>Pages</Form.Label>
-                <Form.Control
-                    type="text"
-                    value={inputValues.pages}
-                    onChange={(e) =>
-                        setInputValues({ ...inputValues, pages: e.target.value })
-                    }
-                    placeholder="Enter number of pages"
-                />
-            </Form.Group>
+                <Form.Group controlId="formPages" className="mb-2 col-md-6">
+                    <Form.Label className="fw-bold" style={{ fontSize: "1.2rem", color: "black" }}>Pages</Form.Label>
+                    <Form.Control
+                        type="text"
+                        value={inputValues.pages}
+                        onChange={(e) =>
+                            setInputValues({ ...inputValues, pages: e.target.value })
+                        }
+                        placeholder="Enter number of pages"
+                    />
+                </Form.Group>
+            </Row>
 
             <Form.Group controlId="resourceFiles" className="mb-2">
                 <Form.Label className="fw-bold" style={{ fontSize: "1.2rem", color: "black" }}>Add Resources</Form.Label>
