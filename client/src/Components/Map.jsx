@@ -9,9 +9,11 @@ import Feature from "ol/Feature";
 import Point from "ol/geom/Point";
 import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
+import Cluster from "ol/source/Cluster";
 import Style from "ol/style/Style";
 import Icon from "ol/style/Icon";
 import Stroke from "ol/style/Stroke";
+import Fill from "ol/style/Fill";
 import { GeoJSON } from "ol/format";
 import API from "../API/API.mjs";
 import designIcon from "../Icons/design.svg";
@@ -35,6 +37,7 @@ const CityMap = ({ handleCoordinatesSelected, isSatelliteView }) => {
     const [selectedDocument, setSelectedDocument] = useState(null);
     const [documentLayer, setDocumentLayer] = useState(null);
     const [boundaryLayer, setBoundaryLayer] = useState(null);
+    const [clusterLayer, setClusterLayer] = useState(null);
 
     const { setAllDocuments, allDocuments, isLoggedIn, isSelectingCoordinates } =
         useContext(AppContext);
@@ -145,12 +148,47 @@ const CityMap = ({ handleCoordinatesSelected, isSatelliteView }) => {
                 });
 
             const vectorSource = new VectorSource({ features });
+
+            //Cluster layers
+            const clusterSource = new Cluster({
+                distance: 40,
+                source: vectorSource
+            });
+
+            const clusterLayer = new VectorLayer({
+                source: clusterSource,
+                style: (feature) => {
+                    const size = feature.get("features").length;
+                    return new Style({
+                        image: new CircleStyle({
+                            radius: 10,
+                            stroke: new Stroke({
+                              color: '#fff',
+                            }),
+                            fill: new Fill({
+                              color: '#3399CC',
+                            }),
+                          }),
+                        text: size > 1 ? new Text({
+                            text: size.toString(),
+                            fill: new Fill({ color: "#000" }),
+                            stroke: new Stroke({ color: "#fff", width: 3 }),
+                        }) : null,
+                    });
+                },
+            });
+
             const newDocumentLayer = new VectorLayer({ source: vectorSource });
 
             map.addLayer(newDocumentLayer);
+            //map.addLayer(clusterLayer);
 
             if (documentLayer) map.removeLayer(documentLayer); // Remove old layer
+            if (clusterLayer) map.removeLayer(clusterLayer); // Remove old cluster layer
+
             setDocumentLayer(newDocumentLayer);
+            setClusterLayer(clusterLayer);
+
         } else if (documentLayer) {
             map.removeLayer(documentLayer);
             setDocumentLayer(null);
@@ -266,6 +304,10 @@ const CityMap = ({ handleCoordinatesSelected, isSatelliteView }) => {
                         };
                         hoveredFeatureRef.current = featureAtPixel;
                     }
+
+                    //Hovered area need to put in this point
+                    
+
                 } else {
                     if (hoveredFeatureRef.current) {
                         hoveredFeatureRef.current.setStyle(hoveredFeatureRef.current.initialStyle);
